@@ -1,0 +1,37 @@
+{
+  "name": "browser-environment",
+  "version": "0.0.8",
+  "description": "Detect browser environment",
+  "keywords": [
+    "env",
+    "browser",
+    "environment"
+  ],
+  "author": "Andrey Khokhlov <andrey@hohlov.pro>",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:andrey-hohlov/browser-environment.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andrey-hohlov/browser-environment/issues"
+  },
+  "homepage": "https://github.com/andrey-hohlov/browser-environment",
+  "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.2",
+    "rollup": "^1.18.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-uglify": "^6.0.2"
+  },
+  "main": "lib/browserEnvironment.js",
+  "scripts": {
+    "build": "rollup -c",
+    "lint": "node_modules/.bin/eslint src --fix",
+    "prepublishOnly": "npm run lint && npm run build"
+  }
+}
