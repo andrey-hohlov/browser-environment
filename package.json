@@ -1,6 +1,6 @@
 {
   "name": "browser-environment",
-  "version": "0.0.10",
+  "version": "1.0.0",
   "description": "Detect browser environment",
   "keywords": [
     "env",
