@@ -45,7 +45,10 @@ const env = {
   userHovering: false,
   utilityFocus: false,
   pointerFocus: false,
-  viewport: null,
+  viewport: {
+    h: 0,
+    w: 0,
+  },
   retina: false,
   touchScreen: false,
   $subscribe: subscribe,
@@ -88,10 +91,8 @@ const setClasses = () => {
 };
 
 const detectViewport = () => {
-  env.viewport = {
-    w: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
-    h: Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
-  };
+  env.viewport.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+  env.viewport.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 };
 
 const emit = () => {
