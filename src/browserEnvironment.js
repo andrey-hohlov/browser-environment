@@ -54,7 +54,7 @@ class ENV {
     this.utilityFocus = true;
 
     [
-      'onMouseOver',
+      'onMouseMove',
       'onTouchStart',
       'onDocumentFocusIn',
       'onDocumentKeydown',
@@ -101,7 +101,7 @@ class ENV {
 
   setEventListeners(add = true) {
     const action = add ? 'addEventListener' : 'removeEventListener';
-    window[action]('mouseover', this.onMouseOver);
+    window[action]('mousemove', this.onMouseMove);
     window[action]('touchstart', this.onTouchStart);
     window[action]('resize', this.throttledOnResize);
     window[action]('blur', this.onWindowBlur);
@@ -127,7 +127,7 @@ class ENV {
     this.firefox = typeof InstallTrigger !== 'undefined';
     this.safari = (
       /constructor/i.test(window.HTMLElement)
-      || (p => p.toString() === '[object SafariRemoteNotification]')(!window.safari || window.safari.pushNotification)
+      || ((p) => p.toString() === '[object SafariRemoteNotification]')(!window.safari || window.safari.pushNotification)
     );
     this.ie = /*@cc_on!@*/false || !!document.documentMode; // eslint-disable-line
     this.ie10 = document.documentMode === 10;
@@ -185,7 +185,7 @@ class ENV {
     });
   }
 
-  onMouseOver() {
+  onMouseMove() {
     if (this.userHovering) return;
 
     this.userTouching = false;
@@ -290,7 +290,7 @@ class ENV {
 
   emit() {
     const state = this.getEnv();
-    this.$listeners.forEach(handler => handler(state));
+    this.$listeners.forEach((handler) => handler(state));
   }
 
   subscribe(handler) {
