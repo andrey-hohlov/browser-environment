@@ -1,7 +1,7 @@
 let pointerFocusTimeout;
 
 let pointerFocus = false;
-let lastEvent = '';
+let mouseMoveCount = 0;
 
 const listeners = [];
 
@@ -101,13 +101,13 @@ const emit = () => {
 
 const onMouseMove = () => {
   // Mousemove fires on iOS on tap, right after touchstart and touchend
-  if (!env.userHovering && lastEvent !== 'touchend') {
+  if (!env.userHovering && mouseMoveCount > 10) {
+    mouseMoveCount++;
     env.userTouching = false;
     env.userHovering = true;
     setClasses();
     emit();
   }
-  lastEvent = 'mousemove';
 };
 
 const onTouchStart = () => {
@@ -117,11 +117,7 @@ const onTouchStart = () => {
     setClasses();
     emit();
   }
-  lastEvent = 'touchstart';
-};
-
-const onTouchEnd = () => {
-  lastEvent = 'touchend';
+  mouseMoveCount = 0;
 };
 
 const onDocumentFocusIn = (e) => {
@@ -199,10 +195,15 @@ const init = () => {
     !!('ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch))
   );
 
+  // For first time assume based on the screen
+  env.userTouching = env.touchScreen;
+  env.userHovering = !env.userTouching;
+
   detectViewport();
+  setClasses();
+  emit();
 
   window.addEventListener('touchstart', onTouchStart);
-  window.addEventListener('touchend', onTouchEnd);
   window.addEventListener('mousemove', onMouseMove);
   window.addEventListener('resize', onWindowResize);
   window.addEventListener('orientationchange', onWindowResize);
