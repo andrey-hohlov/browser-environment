@@ -17,6 +17,11 @@
     "url": "https://github.com/andrey-hohlov/browser-environment/issues"
   },
   "homepage": "https://github.com/andrey-hohlov/browser-environment",
+  "files": [
+    "lib",
+    "src",
+    "README.md"
+  ],
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@babel/preset-env": "^7.12.7",
