@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>Test</title>
+</head>
+<body>
+  <input type="text">
+  <button type="button"></button>
+  <pre id="dump"></pre>
+  <script src="../lib/browserEnvironment.js"></script>
+  <script>
+    const env = window.browserEnvironment.init();
+    const dump = document.getElementById('dump');
+    const printEnv = () => dump.innerText = JSON.stringify(env, null, 2);
+    printEnv();
+    env.subscribe(printEnv);
+  </script>
+</body>
+</html>

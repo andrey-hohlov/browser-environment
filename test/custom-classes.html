@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>Test</title>
+</head>
+<body>
+  <input type="text">
+  <button type="button"></button>
+  <script src="../lib/browserEnvironment.js"></script>
+  <script>
+    window.browserEnvironment.init({
+      setClasses(env) {
+        const classNames = {
+          '_mac': env.mac,
+          '_win': env.win,
+          '_ios': env.ios,
+          '_android': env.android,
+          '_ipad': env.iPad,
+          '_iphone': env.iPhone,
+          '_opera': env.opera,
+          '_firefox': env.firefox,
+          '_safari': env.safari,
+          '_ie': env.ie,
+          '_ie10': env.ie10,
+          '_ie11': env.ie11,
+          '_edge': env.edge,
+          '_chrome': env.chrome,
+          '_retina': env.retina,
+          '_touchscreen': env.touchScreen,
+          '_user-touching': env.userTouching,
+          '_user-hovering': env.userHovering,
+          '_utility-focus': env.utilityFocus,
+          '_pointer-focus': env.pointerFocus,
+        };
+
+        Object.keys(classNames).forEach((className) => {
+          document.documentElement.classList[classNames[className] ? 'add' : 'remove'](className);
+        });
+      },
+    });
+  </script>
+</body>
+</html>

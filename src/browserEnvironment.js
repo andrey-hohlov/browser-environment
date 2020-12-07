@@ -1,28 +1,13 @@
-let pointerFocusTimeout;
-
 let pointerFocus = false;
 let mouseMoveCount = 0;
+let pointerFocusTimeout = 0;
+let instance;
+
+const config = {
+  setClasses: true,
+};
 
 const listeners = [];
-
-const unsubscribe = (handler) => {
-  const index = listeners.indexOf(handler);
-  if (index > -1) {
-    listeners.splice(index, 1);
-  }
-};
-
-const subscribe = (handler) => {
-  if (typeof handler !== 'function') {
-    throw new TypeError('Handler must be function');
-  }
-
-  if (!listeners.includes(handler)) {
-    listeners.push(handler);
-  }
-
-  return () => unsubscribe(handler);
-};
 
 const env = {
   browser: false,
@@ -45,133 +30,28 @@ const env = {
   userHovering: false,
   utilityFocus: false,
   pointerFocus: false,
-  viewport: {
-    h: 0,
-    w: 0,
-  },
   retina: false,
   touchScreen: false,
-  $subscribe: subscribe,
-  $unsubscribe: unsubscribe,
+  viewport: {
+    w: 0,
+    h: 0,
+  },
 };
 
-const setClasses = () => {
-  const classNames = {
-    /* eslint-disable quote-props */
-    '_mac': env.mac,
-    '_win': env.win,
-    '_ios': env.ios,
-    '_android': env.android,
-    '_ipad': env.iPad,
-    '_iphone': env.iPhone,
-    '_opera': env.opera,
-    '_firefox': env.firefox,
-    '_safari': env.safari,
-    '_ie': env.ie,
-    '_ie10': env.ie10,
-    '_ie11': env.ie11,
-    '_edge': env.edge,
-    '_chrome': env.chrome,
-    '_retina': env.retina,
-    '_touchscreen': env.touchScreen,
-    '_usertouching': env.userTouching,
-    '_userhovering': env.userHovering,
-    '_utilityfocus': env.utilityFocus,
-    '_pointerfocus': env.pointerFocus,
-    /* eslint-enable quote-props */
+function detectViewport() {
+  env.viewport = {
+    w: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+    h: Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
   };
+}
 
-  Object.keys(classNames).forEach((className) => {
-    if (classNames[className]) {
-      document.documentElement.classList.add(className);
-    } else {
-      document.documentElement.classList.remove(className);
-    }
-  });
-};
-
-const detectViewport = () => {
-  env.viewport.w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-  env.viewport.h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-};
-
-const emit = () => {
-  listeners.forEach((handler) => handler(env));
-};
-
-const onMouseMove = () => {
-  // Mousemove fires on iOS on tap, right after touchstart and touchend
-  if (!env.userHovering && mouseMoveCount > 10) {
-    mouseMoveCount++;
-    env.userTouching = false;
-    env.userHovering = true;
-    setClasses();
-    emit();
-  }
-};
-
-const onTouchStart = () => {
-  if (!env.userTouching) {
-    env.userHovering = false;
-    env.userTouching = true;
-    setClasses();
-    emit();
-  }
-  mouseMoveCount = 0;
-};
-
-const onDocumentFocusIn = (e) => {
-  if (env.pointerFocus && (env.ie10 || env.ie11)) {
-    if (e.originalEvent && (!e.originalEvent.fromElement && !e.originalEvent.relatedTarget)) {
-      pointerFocus = true;
-      setTimeout(() => {
-        pointerFocus = false;
-      });
-    }
-  }
-
-  env.pointerFocus = pointerFocus;
-  env.utilityFocus = !env.pointerFocus;
-  setClasses();
-};
-
-const onDocumentKeydown = () => {
-  clearTimeout(pointerFocusTimeout);
-  pointerFocus = false;
-};
-
-const onDocumentClick = () => {
-  pointerFocus = true;
-  clearTimeout(pointerFocusTimeout);
-  pointerFocusTimeout = setTimeout(() => {
-    pointerFocus = false;
-  }, 600);
-};
-
-const onWindowBlur = () => {
-  const fix = () => {
-    if (env.pointerFocus) {
-      pointerFocus = true;
-      setTimeout(() => {
-        pointerFocus = false;
-      });
-    }
-    window.removeEventListener('focus', fix);
-  };
-  window.addEventListener('focus', fix);
-};
-
-const onWindowResize = () => {
-  detectViewport();
-  emit();
-};
-
-const init = () => {
+function detect() {
   if (typeof window === 'undefined') return;
   const { userAgent, platform } = window.navigator;
 
   env.browser = true;
   env.utilityFocus = true;
+
   env.iPhone = userAgent.indexOf('iPhone') !== -1;
   env.iPad = userAgent.indexOf('iPad') !== -1;
   env.iPod = userAgent.indexOf('iPod') !== -1;
@@ -179,7 +59,11 @@ const init = () => {
   env.mac = !env.iPhone && !env.iPad && !env.iPod && !env.android && platform.indexOf('Mac') !== -1;
   env.win = platform.indexOf('Win') !== -1;
   env.ios = env.iPhone || env.iPad || env.iPod;
-  env.opera = (!!window.opr && !!window.opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+  env.opera = (
+    (!!window.opr && !!window.opr.addons)
+    || !!window.opera
+    || navigator.userAgent.indexOf(' OPR/') >= 0
+  );
   env.firefox = typeof InstallTrigger !== 'undefined';
   env.safari = (
     /constructor/i.test(window.HTMLElement)
@@ -191,32 +75,256 @@ const init = () => {
   env.edge = !env.ie && !!window.StyleMedia;
   env.chrome = !!window.chrome && !!window.chrome.webstore;
   env.retina = window.devicePixelRatio > 1;
-  env.touchScreen = (
-    !!('ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch))
-  );
+  env.touchScreen = !!('ontouchstart' in window || (window.DocumentTouch && document instanceof window.DocumentTouch));
 
-  // For first time assume based on the screen
   env.userTouching = env.touchScreen;
   env.userHovering = !env.userTouching;
 
   detectViewport();
-  setClasses();
-  emit();
+}
 
-  window.addEventListener('touchstart', onTouchStart);
-  window.addEventListener('mousemove', onMouseMove);
-  window.addEventListener('resize', onWindowResize);
-  window.addEventListener('orientationchange', onWindowResize);
-  window.addEventListener('blur', onWindowBlur);
-  document.documentElement.addEventListener('focusin', onDocumentFocusIn);
-  document.documentElement.addEventListener('keydown', onDocumentKeydown);
-  document.documentElement.addEventListener('pointerdown', onDocumentClick);
-  document.documentElement.addEventListener('pointerup', onDocumentClick);
-  document.documentElement.addEventListener('mousedown', onDocumentClick);
-  document.documentElement.addEventListener('mouseup', onDocumentClick);
-  document.documentElement.addEventListener('click', onDocumentClick);
+function unsubscribe(handler) {
+  const index = listeners.indexOf(handler);
+  if (index > -1) {
+    listeners.splice(index, 1);
+  }
+}
+
+function subscribe(handler) {
+  if (typeof handler !== 'function') {
+    throw new TypeError('Handler must be function');
+  }
+
+  if (!listeners.includes(handler)) {
+    listeners.push(handler);
+  }
+
+  return () => unsubscribe(handler);
+}
+
+function setClasses() {
+  const classNames = {
+    'env-mac': env.mac,
+    'env-win': env.win,
+    'env-ios': env.ios,
+    'env-android': env.android,
+    'env-ipad': env.iPad,
+    'env-iphone': env.iPhone,
+    'env-opera': env.opera,
+    'env-firefox': env.firefox,
+    'env-safari': env.safari,
+    'env-ie': env.ie,
+    'env-ie10': env.ie10,
+    'env-ie11': env.ie11,
+    'env-edge': env.edge,
+    'env-chrome': env.chrome,
+    'env-retina': env.retina,
+    'env-touchscreen': env.touchScreen,
+    'env-user-touching': env.userTouching,
+    'env-user-hovering': env.userHovering,
+    'env-utility-focus': env.utilityFocus,
+    'env-pointer-focus': env.pointerFocus,
+  };
+
+  Object.keys(classNames).forEach((className) => {
+    document.documentElement.classList[classNames[className] ? 'add' : 'remove'](className);
+  });
+}
+
+function onEnvChange() {
+  listeners.forEach((handler) => handler(env));
+
+  if (typeof config.setClasses === 'function') {
+    config.setClasses({
+      ...env,
+      viewport: {
+        ...env.viewport,
+      },
+    });
+  } else if (config.setClasses) {
+    setClasses();
+  }
+}
+
+function onMouseMove() {
+  // Mousemove fires on iOS on tap, right after touchstart and touchend
+  mouseMoveCount++;
+  if (!env.userHovering && mouseMoveCount > 10) {
+    env.userTouching = false;
+    env.userHovering = true;
+    onEnvChange();
+  }
+}
+
+function onTouchStart() {
+  if (!env.userTouching) {
+    env.userHovering = false;
+    env.userTouching = true;
+    onEnvChange();
+  }
+  mouseMoveCount = 0;
+}
+
+function onDocumentFocusIn(e) {
+  if (env.pointerFocus && (env.ie10 || env.ie11)) {
+    if (e.originalEvent && (!e.originalEvent.fromElement && !e.originalEvent.relatedTarget)) {
+      pointerFocus = true;
+      setTimeout(() => {
+        pointerFocus = false;
+      });
+    }
+  }
+
+  env.pointerFocus = pointerFocus;
+  env.utilityFocus = !env.pointerFocus;
+  onEnvChange();
+}
+
+function onDocumentKeydown() {
+  clearTimeout(pointerFocusTimeout);
+  pointerFocus = false;
+}
+
+function onDocumentClick() {
+  pointerFocus = true;
+  clearTimeout(pointerFocusTimeout);
+  pointerFocusTimeout = setTimeout(() => {
+    pointerFocus = false;
+  }, 600);
+}
+
+function onWindowBlur() {
+  const fix = () => {
+    if (env.pointerFocus) {
+      pointerFocus = true;
+      setTimeout(() => {
+        pointerFocus = false;
+      });
+    }
+    window.removeEventListener('focus', fix);
+  };
+  window.addEventListener('focus', fix);
+}
+
+const onWindowResize = () => {
+  detectViewport();
+  onEnvChange();
 };
 
-init();
+function listen(add = true) {
+  const action = `${add ? 'add' : 'remove'}EventListener`;
+  window[action]('touchstart', onTouchStart);
+  window[action]('mousemove', onMouseMove);
+  window[action]('blur', onWindowBlur);
+  document.documentElement[action]('focusin', onDocumentFocusIn);
+  document.documentElement[action]('keydown', onDocumentKeydown);
+  document.documentElement[action]('pointerdown', onDocumentClick);
+  document.documentElement[action]('pointerup', onDocumentClick);
+  document.documentElement[action]('mousedown', onDocumentClick);
+  document.documentElement[action]('mouseup', onDocumentClick);
+  document.documentElement[action]('click', onDocumentClick);
+  window.addEventListener('orientationchange', onWindowResize);
+  window.addEventListener('resize', onWindowResize);
+}
 
-export default env;
+function init(params= {}) {
+  if (!instance) {
+    if (typeof params.setClasses !== 'undefined') {
+      config.setClasses = params.setClasses;
+    }
+
+    instance = {
+      get browser() {
+        return env.browser;
+      },
+      get opera() {
+        return env.opera;
+      },
+      get firefox() {
+        return env.firefox;
+      },
+      get safari() {
+        return env.safari;
+      },
+      get ie() {
+        return env.touchScreen;
+      },
+      get ie10() {
+        return env.ie10;
+      },
+      get ie11() {
+        return env.ie11;
+      },
+      get edge() {
+        return env.edge;
+      },
+      get chrome() {
+        return env.chrome;
+      },
+      get iPhone() {
+        return env.iPhone;
+      },
+      get iPad() {
+        return env.iPad;
+      },
+      get iPod() {
+        return env.iPod;
+      },
+      get android() {
+        return env.android;
+      },
+      get mac() {
+        return env.mac;
+      },
+      get win() {
+        return env.win;
+      },
+      get ios() {
+        return env.ios;
+      },
+      get userTouching() {
+        return env.userTouching;
+      },
+      get userHovering() {
+        return env.userHovering;
+      },
+      get utilityFocus() {
+        return env.utilityFocus;
+      },
+      get pointerFocus() {
+        return env.pointerFocus;
+      },
+      get retina() {
+        return env.retina;
+      },
+      get touchScreen() {
+        return env.touchScreen;
+      },
+      get viewport() {
+        return {
+          w: env.viewport.w,
+          h: env.viewport.h,
+        };
+      },
+      subscribe,
+      unsubscribe,
+    };
+
+    detect();
+    listen();
+    onEnvChange();
+  }
+
+  return instance;
+}
+
+function destroy() {
+  if (!instance) return;
+  listen(false);
+  instance = null;
+}
+
+export default {
+  init,
+  destroy,
+};
