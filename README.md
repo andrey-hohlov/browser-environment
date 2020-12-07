@@ -52,14 +52,21 @@ const env = browserEnv.init();
 Subscribe for changes:
 
 ```
-function onEnvChanged(envState) {
+import browserEnv from 'browser-environment';
+
+function onChange(envState) {
   console.log(envState);
 }
 
-env.subscribe(onEnvChanged);
+const env = browserEnv.init({
+  onChange,
+});
+
+// Alternative withoption to unsubscribe:
+env.subscribe(onChange);
 
 // Unsubscribe:
-// env.unsubscribe(onEnvChanged);
+env.unsubscribe(onChange);
 ```
 
 By default, it reflects env with css classes on the html element:

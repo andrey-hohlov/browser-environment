@@ -10,37 +10,36 @@
   <button type="button"></button>
   <script src="../lib/browserEnvironment.js"></script>
   <script>
-    const env = window.browserEnvironment.init({
-      setClasses: false
-    });
+    window.browserEnvironment.init({
+      setClasses: false,
+      onChange(envState) {
+        const classNames = {
+          '_mac': envState.mac,
+          '_win': envState.win,
+          '_ios': envState.ios,
+          '_android': envState.android,
+          '_ipad': envState.iPad,
+          '_iphone': envState.iPhone,
+          '_opera': envState.opera,
+          '_firefox': envState.firefox,
+          '_safari': envState.safari,
+          '_ie': envState.ie,
+          '_ie10': envState.ie10,
+          '_ie11': envState.ie11,
+          '_edge': envState.edge,
+          '_chrome': envState.chrome,
+          '_retina': envState.retina,
+          '_touchscreen': envState.touchScreen,
+          '_user-touching': envState.userTouching,
+          '_user-hovering': envState.userHovering,
+          '_utility-focus': envState.utilityFocus,
+          '_pointer-focus': envState.pointerFocus,
+        };
 
-    env.subscribe((envState) => {
-      const classNames = {
-        '_mac': envState.mac,
-        '_win': envState.win,
-        '_ios': envState.ios,
-        '_android': envState.android,
-        '_ipad': envState.iPad,
-        '_iphone': envState.iPhone,
-        '_opera': envState.opera,
-        '_firefox': envState.firefox,
-        '_safari': envState.safari,
-        '_ie': envState.ie,
-        '_ie10': envState.ie10,
-        '_ie11': envState.ie11,
-        '_edge': envState.edge,
-        '_chrome': envState.chrome,
-        '_retina': envState.retina,
-        '_touchscreen': envState.touchScreen,
-        '_user-touching': envState.userTouching,
-        '_user-hovering': envState.userHovering,
-        '_utility-focus': envState.utilityFocus,
-        '_pointer-focus': envState.pointerFocus,
-      };
-
-      Object.keys(classNames).forEach((className) => {
-        document.documentElement.classList[classNames[className] ? 'add' : 'remove'](className);
-      });
+        Object.keys(classNames).forEach((className) => {
+          document.documentElement.classList[classNames[className] ? 'add' : 'remove'](className);
+        });
+      },
     });
   </script>
 </body>

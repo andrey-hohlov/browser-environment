@@ -132,10 +132,21 @@ function setClasses() {
 }
 
 function onEnvChange() {
-  listeners.forEach((handler) => handler(env));
+  const envClone = {
+    ...env,
+    viewport: {
+      ...env.viewport,
+    },
+  };
+
+  listeners.forEach((handler) => handler(envClone));
 
   if (config.setClasses) {
     setClasses();
+  }
+
+  if (config.onChange) {
+    config.onChange(envClone);
   }
 }
 
@@ -226,6 +237,10 @@ function init(params = {}) {
       config.setClasses = !!params.setClasses;
     }
 
+    if (params.onChange) {
+      config.onChange = params.onChange;
+    }
+
     instance = {
       get browser() {
         return env.browser;
@@ -306,6 +321,8 @@ function init(params = {}) {
     detect();
     listen();
     onEnvChange();
+  } else {
+    console.warn('browser environment is already initialized');
   }
 
   return instance;
@@ -313,6 +330,10 @@ function init(params = {}) {
 
 function destroy() {
   if (!instance) return;
+
+  config.setClasses = true;
+  config.onChange = null;
+
   listen(false);
   instance = null;
 }
