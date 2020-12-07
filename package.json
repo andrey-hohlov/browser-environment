@@ -31,7 +31,7 @@
   "main": "lib/browserEnvironment.js",
   "scripts": {
     "build": "rollup -c",
-    "lint": "node_modules/.bin/eslint src --fix",
+    "lint": "eslint src --fix",
     "prepublishOnly": "npm run lint && npm run build"
   }
 }
