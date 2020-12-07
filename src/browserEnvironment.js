@@ -134,14 +134,7 @@ function setClasses() {
 function onEnvChange() {
   listeners.forEach((handler) => handler(env));
 
-  if (typeof config.setClasses === 'function') {
-    config.setClasses({
-      ...env,
-      viewport: {
-        ...env.viewport,
-      },
-    });
-  } else if (config.setClasses) {
+  if (config.setClasses) {
     setClasses();
   }
 }
@@ -227,10 +220,10 @@ function listen(add = true) {
   window.addEventListener('resize', onWindowResize);
 }
 
-function init(params= {}) {
+function init(params = {}) {
   if (!instance) {
     if (typeof params.setClasses !== 'undefined') {
-      config.setClasses = params.setClasses;
+      config.setClasses = !!params.setClasses;
     }
 
     instance = {
