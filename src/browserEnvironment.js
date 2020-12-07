@@ -101,8 +101,8 @@ const emit = () => {
 
 const onMouseMove = () => {
   // Mousemove fires on iOS on tap, right after touchstart and touchend
+  mouseMoveCount++;
   if (!env.userHovering && mouseMoveCount > 10) {
-    mouseMoveCount++;
     env.userTouching = false;
     env.userHovering = true;
     setClasses();
