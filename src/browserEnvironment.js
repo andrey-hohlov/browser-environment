@@ -38,6 +38,23 @@ const env = {
   },
 };
 
+function iPad() {
+  return navigator.userAgent.includes('Mac') && 'ontouchend' in document;
+}
+
+// https://stackoverflow.com/questions/9038625/detect-if-device-is-ios
+function iOS() {
+  return [
+      'iPad Simulator',
+      'iPhone Simulator',
+      'iPod Simulator',
+      'iPad',
+      'iPhone',
+      'iPod'
+    ].includes(navigator.platform)
+    || iPad();
+}
+
 function detectViewport() {
   env.viewport = {
     w: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
@@ -53,12 +70,12 @@ function detect() {
   env.utilityFocus = true;
 
   env.iPhone = userAgent.indexOf('iPhone') !== -1;
-  env.iPad = userAgent.indexOf('iPad') !== -1;
+  env.iPad = iPad();
   env.iPod = userAgent.indexOf('iPod') !== -1;
   env.android = /Android/.test(userAgent);
   env.mac = !env.iPhone && !env.iPad && !env.iPod && !env.android && platform.indexOf('Mac') !== -1;
   env.win = platform.indexOf('Win') !== -1;
-  env.ios = env.iPhone || env.iPad || env.iPod;
+  env.ios = iOS();
   env.opera = (
     (!!window.opr && !!window.opr.addons)
     || !!window.opera
