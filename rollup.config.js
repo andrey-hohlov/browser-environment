@@ -1,15 +1,15 @@
 import babel from 'rollup-plugin-babel';
-import { uglify } from "rollup-plugin-uglify";
+import { terser } from 'rollup-plugin-terser';
 
 export default {
-  input: 'src/browserEnvironment.js',
+  input: 'src/BrowserEnvironment.js',
   output:  {
-    file: 'lib/browserEnvironment.js',
+    file: 'lib/BrowserEnvironment.js',
     format: 'umd',
-    name: 'browserEnvironment'
+    name: 'BrowserEnvironment'
   },
   plugins: [
     babel(),
-    uglify(),
+    terser(),
   ],
 };

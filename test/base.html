@@ -9,12 +9,12 @@
   <input type="text">
   <button type="button"></button>
   <pre id="dump"></pre>
-  <script src="../lib/browserEnvironment.js"></script>
+  <script src="../lib/BrowserEnvironment.js"></script>
   <script>
-    const env = window.browserEnvironment.init();
+    const env = new window.BrowserEnvironment();
     const dump = document.getElementById('dump');
-    const printEnv = () => dump.innerText = JSON.stringify(env, null, 2);
-    printEnv();
+    const printEnv = (state) => dump.innerText = JSON.stringify(state, null, 2);
+    printEnv(env.getState());
     env.subscribe(printEnv);
   </script>
 </body>

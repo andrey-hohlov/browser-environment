@@ -27,9 +27,9 @@ Detect browser environment
   retina: true,
   touchScreen: false,
   viewport: {
-    w: 784,
-    h: 766
-  }
+    w: 1440,
+    h: 900,
+  },
 }
 ```
 
@@ -44,21 +44,21 @@ npm i -S browser-environment
 Initialize:
 
 ```
-import browserEnv from 'browser-environment';
+import Env from 'browser-environment';
 
-const env = browserEnv.init();
+const env = new Env();
 ```
 
 Subscribe for changes:
 
 ```
-import browserEnv from 'browser-environment';
+import Env from 'browser-environment';
 
-function onChange(envState) {
-  console.log(envState);
+function onChange(state) {
+  console.log(state);
 }
 
-const env = browserEnv.init({
+const env = new Env({
   onChange,
 });
 
@@ -67,39 +67,6 @@ env.subscribe(onChange);
 
 // Unsubscribe:
 env.unsubscribe(onChange);
-```
-
-By default, it reflects env with css classes on the html element:
-
-```
-env-mac
-env-win
-env-ios
-env-android
-env-ipad
-env-iphone
-env-opera
-env-firefox
-env-safari
-env-ie
-env-ie10
-env-ie11
-env-edge
-env-chrome
-env-retina
-env-touchscreen
-env-user-touching
-env-user-hovering
-env-utility-focus
-env-pointer-focus
-```
-
-To disable this behavior:
-
-```
-const env = browserEnv.init({
-  setClasses: false,
-});
 ```
 
 ## Features description

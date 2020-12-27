@@ -2,6 +2,9 @@
 
 node_modules
 
+# Generated code
+/lib
+
 # Log files
 npm-debug.log*
 yarn-debug.log*

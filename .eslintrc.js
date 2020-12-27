@@ -7,24 +7,13 @@ module.exports = {
     'airbnb-base',
   ],
   rules: {
-    'class-methods-use-this': 0,
-    'comma-dangle': 2,
-    'global-require': 0,
-    'import/prefer-default-export': 0,
-    indent: 0,
-    'no-console': [
-      2,
-      {
-        allow: ['warn', 'error'],
-      },
-    ],
-    'no-param-reassign': 0,
-    'no-plusplus': 0,
-    'no-shadow': 0,
-    'no-underscore-dangle': 0,
-    'prefer-destructuring': 0,
+    'class-methods-use-this': 'off',
+    'import/no-named-as-default': 'off',
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
+    'no-param-reassign': ['error', { props: false }],
+    'no-plusplus': 'off',
+    'no-underscore-dangle': 'off',
+    'prefer-destructuring': 'off',
   },
-  parserOptions: {
-    parser: 'babel-eslint',
-  },
+  parser: '@babel/eslint-parser',
 };
