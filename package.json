@@ -33,7 +33,7 @@
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-terser": "^7.0.2"
   },
-  "main": "lib/browserEnvironment.js",
+  "main": "lib/BrowserEnvironment.js",
   "scripts": {
     "build": "rollup -c",
     "lint": "eslint src --fix",
