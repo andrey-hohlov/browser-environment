@@ -151,7 +151,8 @@ export default class Env {
     this.$pointerFocus = false;
   }
 
-  onDocumentClick() {
+  onDocumentClick(e) {
+    if (!e.detail) return; // enter/space on focused element
     this.$pointerFocus = true;
     clearTimeout(this.$pointerFocusTimeout);
     this.$pointerFocusTimeout = setTimeout(() => {
