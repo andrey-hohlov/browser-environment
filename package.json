@@ -41,7 +41,6 @@
   },
   "main": "dist/index.js",
   "module": "dist/lib/index.js",
-  "browser": "dist/BrowserEnvironment.js",
   "scripts": {
     "build": "rimraf dist && rollup -c && tsc",
     "lint": "eslint src --ext .js,.ts --fix",
@@ -54,7 +53,7 @@
     }
   },
   "lint-staged": {
-    "*.{js,ts}": [
+    "src/**/*.{js,ts}": [
       "npm run lint"
     ]
   }

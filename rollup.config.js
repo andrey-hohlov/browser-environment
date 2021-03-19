@@ -12,7 +12,7 @@ export default  {
       exports: 'auto'
     },
     {
-      file: pkg.browser,
+      file: 'dist/BrowserEnvironment.js',
       format: 'iife',
       name: 'BrowserEnvironment',
     }
