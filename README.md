@@ -27,8 +27,8 @@ Detect browser environment
   retina: true,
   touchScreen: false,
   viewport: {
-    w: 1440,
-    h: 900,
+    width: 1440,
+    height: 900,
   },
 }
 ```
