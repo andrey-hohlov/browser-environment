@@ -18,8 +18,7 @@
   },
   "homepage": "https://github.com/andrey-hohlov/browser-environment",
   "files": [
-    "lib",
-    "src",
+    "dist",
     "README.md"
   ],
   "devDependencies": {
