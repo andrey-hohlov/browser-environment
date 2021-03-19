@@ -7,15 +7,14 @@
 </head>
 <body>
   <input type="text">
-  <button type="button"></button>
+  <button type="button">Button</button>
   <pre id="dump"></pre>
-  <script src="../lib/BrowserEnvironment.js"></script>
+  <script src="../../dist/BrowserEnvironment.js"></script>
   <script>
-    const env = new window.BrowserEnvironment();
     const dump = document.getElementById('dump');
-    const printEnv = (state) => dump.innerText = JSON.stringify(state, null, 2);
-    printEnv(env.getState());
-    env.subscribe(printEnv);
+    const env = new window.BrowserEnvironment({
+      onChange: (state) => dump.innerText = JSON.stringify(state, null, 2),
+    });
   </script>
 </body>
 </html>

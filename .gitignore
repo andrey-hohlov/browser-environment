@@ -4,6 +4,7 @@ node_modules
 
 # Generated code
 /lib
+/dist
 
 # Log files
 npm-debug.log*

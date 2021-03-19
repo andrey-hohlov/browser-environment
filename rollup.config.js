@@ -1,15 +1,26 @@
-import babel from 'rollup-plugin-babel';
+import typescript from '@rollup/plugin-typescript';
 import { terser } from 'rollup-plugin-terser';
 
-export default {
-  input: 'src/BrowserEnvironment.js',
-  output:  {
-    file: 'lib/BrowserEnvironment.js',
-    format: 'umd',
-    name: 'BrowserEnvironment'
-  },
+import pkg from './package.json';
+
+export default  {
+  input: 'src/index.ts',
+  output: [
+    {
+      file: pkg.main,
+      format: 'cjs',
+      exports: 'auto'
+    },
+    {
+      file: pkg.browser,
+      format: 'iife',
+      name: 'BrowserEnvironment',
+    }
+  ],
   plugins: [
-    babel(),
+    typescript({
+      declaration: false,
+    }),
     terser(),
   ],
 };

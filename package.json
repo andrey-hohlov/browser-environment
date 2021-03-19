@@ -7,7 +7,7 @@
     "browser",
     "environment"
   ],
-  "author": "Andrey Khokhlov <andrey@hohlov.pro>",
+  "author": "Andrei Khokhlov <andrey@hohlov.pro>",
   "repository": {
     "type": "git",
     "url": "git@github.com:andrey-hohlov/browser-environment.git"
@@ -23,25 +23,40 @@
     "README.md"
   ],
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/eslint-parser": "^7.12.1",
-    "@babel/preset-env": "^7.12.11",
-    "eslint": "^7.16.0",
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@rollup/plugin-typescript": "^8.2.0",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "eslint": "^7.22.0",
     "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-plugin-import": "^2.22.1",
-    "rollup": "^2.35.1",
-    "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-terser": "^7.0.2"
+    "husky": "^4.3.6",
+    "lint-staged": "^10.5.4",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.41.5",
+    "rollup-plugin-terser": "^7.0.2",
+    "standard-version": "^9.0.0",
+    "tslib": "^2.1.0",
+    "typescript": "^4.2.3"
   },
-  "main": "lib/BrowserEnvironment.js",
+  "main": "dist/index.js",
+  "module": "dist/lib/index.js",
+  "browser": "dist/BrowserEnvironment.js",
   "scripts": {
-    "build": "rollup -c",
-    "lint": "eslint src --fix",
+    "build": "rimraf dist && rollup -c && tsc",
+    "lint": "eslint src --ext .js,.ts --fix",
     "prepublishOnly": "npm run build"
   },
-  "browserslist": [
-    "defaults",
-    "> 1%",
-    "last 2 version"
-  ]
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "npm run lint"
+    ]
+  }
 }
