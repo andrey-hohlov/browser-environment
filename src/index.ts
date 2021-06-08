@@ -233,9 +233,6 @@ export default class Environment implements IState {
       }
     }
 
-    console.log('onDocumentFocusIn()');
-    console.log(this.$isPointerFocus);
-
     this.pointerFocus = this.$isPointerFocus;
     this.utilityFocus = !this.pointerFocus;
     this.emitChange();
@@ -248,7 +245,6 @@ export default class Environment implements IState {
 
   private onDocumentClick = (e: MouseEvent): void => {
     if (!e.detail) return; // enter/space on focused element
-    console.log('onDocumentClick!');
 
     this.$isPointerFocus = true;
 
