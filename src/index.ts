@@ -98,11 +98,11 @@ export default class Environment implements IState {
     window.addEventListener('blur', this.onWindowBlur);
     document.documentElement.addEventListener('focusin', this.onDocumentFocusIn);
     document.documentElement.addEventListener('keydown', this.onDocumentKeydown);
-    document.documentElement.addEventListener('pointerdown', this.onDocumentClick);
-    document.documentElement.addEventListener('pointerup', this.onDocumentClick);
-    document.documentElement.addEventListener('mousedown', this.onDocumentClick);
-    document.documentElement.addEventListener('mouseup', this.onDocumentClick);
-    document.documentElement.addEventListener('click', this.onDocumentClick);
+    document.documentElement.addEventListener('pointerdown', this.onDocumentClick, true);
+    document.documentElement.addEventListener('pointerup', this.onDocumentClick, true);
+    document.documentElement.addEventListener('mousedown', this.onDocumentClick, true);
+    document.documentElement.addEventListener('mouseup', this.onDocumentClick, true);
+    document.documentElement.addEventListener('click', this.onDocumentClick, true);
     window.addEventListener('orientationchange', this.onWindowResize);
     window.addEventListener('resize', this.onWindowResize);
   }
@@ -113,11 +113,11 @@ export default class Environment implements IState {
     window.removeEventListener('blur', this.onWindowBlur);
     document.documentElement.removeEventListener('focusin', this.onDocumentFocusIn);
     document.documentElement.removeEventListener('keydown', this.onDocumentKeydown);
-    document.documentElement.removeEventListener('pointerdown', this.onDocumentClick);
-    document.documentElement.removeEventListener('pointerup', this.onDocumentClick);
-    document.documentElement.removeEventListener('mousedown', this.onDocumentClick);
-    document.documentElement.removeEventListener('mouseup', this.onDocumentClick);
-    document.documentElement.removeEventListener('click', this.onDocumentClick);
+    document.documentElement.removeEventListener('pointerdown', this.onDocumentClick, true);
+    document.documentElement.removeEventListener('pointerup', this.onDocumentClick, true);
+    document.documentElement.removeEventListener('mousedown', this.onDocumentClick, true);
+    document.documentElement.removeEventListener('mouseup', this.onDocumentClick, true);
+    document.documentElement.removeEventListener('click', this.onDocumentClick, true);
     window.removeEventListener('orientationchange', this.onWindowResize);
     window.removeEventListener('resize', this.onWindowResize);
   }
@@ -233,6 +233,9 @@ export default class Environment implements IState {
       }
     }
 
+    console.log('onDocumentFocusIn()');
+    console.log(this.$isPointerFocus);
+
     this.pointerFocus = this.$isPointerFocus;
     this.utilityFocus = !this.pointerFocus;
     this.emitChange();
@@ -245,6 +248,7 @@ export default class Environment implements IState {
 
   private onDocumentClick = (e: MouseEvent): void => {
     if (!e.detail) return; // enter/space on focused element
+    console.log('onDocumentClick!');
 
     this.$isPointerFocus = true;
 
